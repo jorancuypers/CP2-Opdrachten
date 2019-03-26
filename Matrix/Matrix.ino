@@ -45,7 +45,7 @@ byte C[8][8] = {{0, 1, 1, 0, 0, 1, 1, 0},
 
 
 //Definiëren van de uitganspinnen
-const int shiftClockPin = 3;  //SH
+const int shiftClockPin = 5;  //SH
 const int latchClockPin = 4;  //ST
 const int serialInputPin = 9; //DS
 
