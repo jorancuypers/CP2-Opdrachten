@@ -105,7 +105,7 @@ void setup() {
 
 void loop(){
    static int i = 0;
-  if (digitalRead(2) == LOW){i = random(0,5);}
+  if (digitalRead(2) == LOW){i = random(0,6);}
 
  unsigned long currentMillis = millis();
  if (currentMillis - previousMillis >= interval) {
