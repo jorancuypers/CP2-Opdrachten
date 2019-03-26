@@ -140,7 +140,6 @@ long interval = 500;
 boolean shiftLeftRight = false;
 
 void setup() {
-  Serial.begin(115200);
   //Instelen van de uitgangspinnen
   pinMode(shiftClockPin, OUTPUT);
   pinMode(latchClockPin, OUTPUT);
@@ -151,7 +150,6 @@ void loop(){
  static int i = 0;
  unsigned long currentMillis = millis();
  if (currentMillis - previousMillis >= interval) {
-   Serial.println(i);
     i = (i+1)%11;
     previousMillis = currentMillis;
 
