@@ -65,7 +65,7 @@ int KS = 0;
 word bericht1  = 0b1101011000010110;
 int Kol = 0;
 unsigned long previousMillis = 0;  
-long interval = 200; 
+long interval = 100; 
 boolean shiftLeftRight = false;
 
 void setup() {
