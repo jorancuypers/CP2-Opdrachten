@@ -277,8 +277,14 @@ byte SPACE[8][8] = {{0, 0, 0, 0, 0, 0, 0, 0},
 };
 
 
+int encoder0PinA = 2;
+int encoder0PinB = 3;
+int encoder0Pos = 0;
+int encoder0PinALast = LOW;
+int n = LOW;
+
 //Definiëren van de uitganspinnen
-const int shiftClockPin = 3;  //SH
+const int shiftClockPin = 5;  //SH
 const int latchClockPin = 4;  //ST
 const int serialInputPin = 9; //DS
 
@@ -305,6 +311,11 @@ unsigned long previousMillis = 0;
 long interval = 500;
 
 void setup() {
+  Serial.begin(115200);
+  pinMode (2, INPUT);
+  pinMode (3, INPUT);
+  attachInterrupt(digitalPinToInterrupt(2), rotary, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(3), rotary, CHANGE);
   //Instelen van de uitgangspinnen
   pinMode(shiftClockPin, OUTPUT);
   pinMode(latchClockPin, OUTPUT);
@@ -422,3 +433,16 @@ void Acpy(byte src[8][8]) {
     }
   }
 }
+
+void rotary(){
+    n = digitalRead(encoder0PinA);
+  if ((encoder0PinALast == LOW) && (n == HIGH)) {
+    if (digitalRead(encoder0PinB) == LOW) {
+      interval = interval - 25;
+    } else {
+      interval = interval + 25;
+    }
+
+  }
+  encoder0PinALast = n; 
+  }
