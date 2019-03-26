@@ -1,11 +1,11 @@
-int IMAGE[8][8]={{1,0,0,0,0,0,0,0},
-                 {1,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {1,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0}};
+int IMAGE[8][8]={{1,0,0,0,0,0,0,1},
+                 {0,1,0,0,0,0,1,0},
+                 {0,0,1,0,0,1,0,0},
+                 {0,0,0,1,1,0,0,0},
+                 {0,0,0,1,1,0,0,0},
+                 {0,0,1,0,0,1,0,0},
+                 {0,1,0,0,0,0,1,0},
+                 {1,0,0,0,0,0,0,1}};
 
 
 
@@ -16,25 +16,23 @@ const int serialInputPin = 9; //DS
 
 //R1 - 1
 //R2 - 2
-//K2 - 3
+int K2 = 3;
 //R8 - 4
-//K4 - 5
+int K4 = 5;
 //R3 - 6
 //R5 - 7
-//K1 - 8
-//K5 - 9
-//K3 - 10
-//K6 - 11
+int K1 = 8;
+int K5 = 9;
+int K3 = 10;
+int K6 = 11;
 //R4 - 12
-//K8 - 13
+int K8 = 13;
 //R6 - 14
 //R7 - 15
-//K7 - 16
-
+int K7 = 16;
+int KS = 0;
 word bericht1  = 0b1101011000010110;
-word bericht2  = 0b1101110000000110;
-word bericht3  = 0b1101001010010010;
-word bericht4  = 0b1001011000110100;
+int K = 0;
 
 
 boolean shiftLeftRight = false;
@@ -48,6 +46,8 @@ void setup() {
 
 void loop()
 {
+ KS= 0;
+ bericht1  = 0b1101011000010110;
  Translate();
  displayData(bericht1);
  delay(1);
@@ -70,24 +70,54 @@ void displayData(word message)
 
 
 void Translate(){
-  int y = 0;
-  if (IMAGE[0][0] == 1){
-    bericht1 = setBits(8, 1, bericht1);
+
+    switch(K){
+      case (0): KS=K1;break;
+      case (1): KS=K2;break;
+      case (2): KS=K3;break;
+      case (3): KS=K4;break;
+      case (4): KS=K5;break;
+      case (5): KS=K6;break;
+      case (6): KS=K7;break;
+      case (7): KS=K8;break;
+      }
+  if (IMAGE[0][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
     bericht1 = setBits(1, 0, bericht1);
     }
-  if (IMAGE[1][0] == 1){
-    bericht1 = setBits(8, 1, bericht1);
+  if (IMAGE[1][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
     bericht1 = setBits(2, 0, bericht1);
     }
-  if (IMAGE[2][0] == 1){
-    bericht1 = setBits(8, 1, bericht1);
+  if (IMAGE[2][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
     bericht1 = setBits(6, 0, bericht1);
     }
-  if (IMAGE[3][0] == 1){
-    bericht1 = setBits(8, 1, bericht1);
+  if (IMAGE[3][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
     bericht1 = setBits(12, 0, bericht1);
     }
-  }
+  if (IMAGE[4][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(7, 0, bericht1);
+    }
+  if (IMAGE[5][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(14, 0, bericht1);
+    }
+  if (IMAGE[6][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(15, 0, bericht1);
+    }
+  if (IMAGE[7][K] == 1){
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(4, 0, bericht1);
+    }
+    K++;
+  if (K > 8) {
+    K=0;}
+    
+}
 
 
 
