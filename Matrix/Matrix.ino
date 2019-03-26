@@ -1,13 +1,13 @@
-int IMAGE[8][8]={{0,0,0,0,0,0,0,0},
-                 {0,0,0,1,1,0,0,0},
-                 {0,0,1,0,0,1,0,0},
-                 {0,0,1,0,0,1,0,0},
-                 {0,1,0,0,0,0,1,0},
-                 {0,1,1,1,1,1,1,0},
-                 {0,1,0,0,0,0,1,0},
-                 {0,1,0,0,0,0,1,0}};
+byte IMAGE[8][8]={{0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0}};
 
-int J[8][8]={{0,0,0,0,0,0,0,0},
+byte J[8][8]={{0,0,0,0,0,0,0,0},
              {0,1,1,1,1,1,1,0},
              {0,0,0,0,0,0,1,0},
              {0,0,0,0,0,0,1,0},
@@ -16,7 +16,14 @@ int J[8][8]={{0,0,0,0,0,0,0,0},
              {0,0,1,0,0,1,1,0},
              {0,0,0,1,1,0,0,0}};
 
-
+byte A[8][8]=    {{0,0,0,0,0,0,0,0},
+                 {0,0,0,1,1,0,0,0},
+                 {0,0,1,0,0,1,0,0},
+                 {0,0,1,0,0,1,0,0},
+                 {0,1,0,0,0,0,1,0},
+                 {0,1,1,1,1,1,1,0},
+                 {0,1,0,0,0,0,1,0},
+                 {0,1,0,0,0,0,1,0}};
 
 
 //Definiëren van de uitganspinnen
@@ -43,11 +50,12 @@ int K7 = 16;
 int KS = 0;
 word bericht1  = 0b1101011000010110;
 int K = 0;
-
-
+unsigned long previousMillis = 0;  
+const long interval = 500; 
 boolean shiftLeftRight = false;
 
 void setup() {
+  Serial.begin(115200);
   //Instelen van de uitgangspinnen
   pinMode(shiftClockPin, OUTPUT);
   pinMode(latchClockPin, OUTPUT);
@@ -55,12 +63,23 @@ void setup() {
 }
 
 void loop(){
+ static int i = 0;
+ unsigned long currentMillis = millis();
+ if (currentMillis - previousMillis >= interval) {
+   Serial.println(i);
+    i = (i+1)%2;
+    previousMillis = currentMillis;
+
+    switch(i){
+      case(0): Acpy(A); break;
+      case(1): Acpy(J); break;
+      }
+ }
  KS= 0;
  bericht1  = 0b1101011000010110;
  Translate();
  displayData(bericht1);
  delay(1);
-
 }
 
 void displayData(word message) 
@@ -141,16 +160,13 @@ short int setBits(int welkeBit,int waardeBit,word X){
     }
 }
 
-void Acpy(int src){
-  int X = -1;
-  int Y = 0;
-  while(X < 9){
-    X++;
-    Y=0;
-      while(Y < 9){
-        src[Y][X] = IMAGE[Y][X];
-        Y++;
-    
-      }
+void Acpy(byte src[8][8]){
+  for (byte i = 0; i<8; i++)
+  {
+    for (byte j = 0; j < 8; j++)
+    {
+      IMAGE[i][j] = src[i][j];
     }
   }
+    }
+  
