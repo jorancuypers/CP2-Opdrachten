@@ -326,16 +326,37 @@ void loop() {
   static int i = 0;
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
-    i = (i + 1) % 6;
+    i = (i + 1) % 27;
     previousMillis = currentMillis;
 
     switch (i) {
-      case (0): Acpy(P); break;
-      case (1): Acpy(SPACE); break;
-      case (2): Acpy(X); break;
-      case (3): Acpy(SPACE); break;
-      case (4): Acpy(L); break;
-      case (5): Acpy(SPACE); break;
+      case (0): Acpy(A); break;
+      case (1): Acpy(B); break;
+      case (2): Acpy(C); break;
+      case (3): Acpy(D); break;
+      case (4): Acpy(E); break;
+      case (5): Acpy(F); break;
+      case (6): Acpy(G); break;
+      case (7): Acpy(H); break;
+      case (8): Acpy(I); break;
+      case (9): Acpy(J); break;
+      case (10): Acpy(K); break;
+      case (11): Acpy(L); break;
+      case (12): Acpy(M); break;
+      case (13): Acpy(N); break;
+      case (14): Acpy(O); break;
+      case (15): Acpy(P); break;
+      case (16): Acpy(Q); break;
+      case (17): Acpy(R); break;
+      case (18): Acpy(S); break;
+      case (19): Acpy(T); break;
+      case (20): Acpy(U); break;
+      case (21): Acpy(V); break;
+      case (22): Acpy(W); break;
+      case (23): Acpy(X); break;
+      case (24): Acpy(Y); break;
+      case (25): Acpy(Z); break;
+      case (26): Acpy(SPACE); break;
     }
   }
   KS = 0;
