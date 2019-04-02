@@ -1,67 +1,131 @@
-int IMAGE[8][8]={{0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,}};
+byte IMAGE[8][8] = {{0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0}
+};
+
+
+byte A [8][8] = {{0,0,1,1,1,1,0,0},
+                      {0,1,0,0,0,0,1,0},
+                      {1,0,1,0,0,1,0,1},
+                      {1,0,0,1,1,0,0,1},
+                      {1,0,0,1,1,0,0,1},
+                      {1,0,1,0,0,1,0,1},
+                      {0,1,0,0,0,0,1,0},
+                      {0,0,1,1,1,1,0,0}};
+                      
+byte B [8][8] = {{0,0,1,1,1,1,0,0},
+                      {0,1,0,0,0,1,1,0},
+                      {1,1,0,0,1,0,0,1},
+                      {1,0,1,1,1,0,0,1},
+                      {1,0,0,1,1,1,0,1},
+                      {1,0,0,1,0,0,1,1},
+                      {0,1,1,0,0,0,1,0},
+                      {0,0,1,1,1,1,0,0}};
+
+byte C [8][8] = {{0,0,1,1,1,1,0,0},
+                      {0,1,0,0,1,0,1,0},
+                      {1,0,0,0,1,0,0,1},
+                      {1,1,1,1,1,0,0,1},
+                      {1,0,0,1,1,1,1,1},
+                      {1,0,0,1,0,0,0,1},
+                      {0,1,0,1,0,0,1,0},
+                      {0,0,1,1,1,1,0,0}};
+
+byte D [8][8] = {{0,0,1,1,1,1,0,0},
+                      {0,1,0,1,0,0,1,0},
+                      {1,0,0,1,0,0,0,1},
+                      {1,0,0,1,1,1,1,1},
+                      {1,1,1,1,1,0,0,1},
+                      {1,0,0,0,1,0,0,1},
+                      {0,1,0,0,1,0,1,0},
+                      {0,0,1,1,1,1,0,0}};
+
+ byte E [8][8] = {{0,0,1,1,1,1,0,0},
+                      {0,1,1,0,0,0,1,0},
+                      {1,0,0,1,0,0,1,1},
+                      {1,0,0,1,1,1,0,1},
+                      {1,0,1,1,1,0,0,1},
+                      {1,1,0,0,1,0,0,1},
+                      {0,1,0,0,0,1,1,0},
+                      {0,0,1,1,1,1,0,0}};
+
+
+int encoder0PinA = 2;
+int encoder0PinB = 3;
+int encoder0Pos = 0;
+int encoder0PinALast = LOW;
+int n = LOW;
 
 //Definiëren van de uitganspinnen
-const int shiftClockPin = 3;  //SH
+const int shiftClockPin = 5;  //SH
 const int latchClockPin = 4;  //ST
 const int serialInputPin = 9; //DS
 
 //R1 - 1
 //R2 - 2
-//K2 - 3
+int K2 = 3;
 //R8 - 4
-//K4 - 5
+int K4 = 5;
 //R3 - 6
 //R5 - 7
-//K1 - 8
-//K5 - 9
-//K3 - 10
-//K6 - 11
+int K1 = 8;
+int K5 = 9;
+int K3 = 10;
+int K6 = 11;
 //R4 - 12
-//K8 - 13
+int K8 = 13;
 //R6 - 14
 //R7 - 15
-//K7 - 16
-
-word bericht1  = 0b1001000001000000;
-word bericht2  = 0b1101110000000110;
-word bericht3  = 0b1101001010010010;
-word bericht4  = 0b1001011000110100;
-
-
-boolean shiftLeftRight = false;
+int K7 = 16;
+int KS = 0;
+word bericht1  = 0b1101011000010110;
+int Kol = 0;
+unsigned long previousMillis = 0;
+long interval = 500;
 
 void setup() {
+  Serial.begin(115200);
+  pinMode (2, INPUT);
+  pinMode (3, INPUT);
+  attachInterrupt(digitalPinToInterrupt(2), rotary, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(3), rotary, CHANGE);
   //Instelen van de uitgangspinnen
   pinMode(shiftClockPin, OUTPUT);
   pinMode(latchClockPin, OUTPUT);
   pinMode(serialInputPin, OUTPUT);
 }
 
-void loop()
-{
+void loop() {
+  static int i = 0;
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    i = (i + 1) % 5;
+    previousMillis = currentMillis;
 
- displayData(bericht1);
- delay(1);
- displayData(bericht2);
- delay(1);
- displayData(bericht3);
- delay(1);
- displayData(bericht4);
- delay(1);
-
+    switch (i) {
+      case (0): Acpy(A); break;
+      case (1): Acpy(B); break;
+      case (2): Acpy(C); break;
+      case (3): Acpy(D); break;
+      case (4): Acpy(E); break;
+    }
+  }
+  KS = 0;
+  bericht1  = 0b1101011000010110;
+  Translate();
+  displayData(bericht1);
+  delay(1);
 }
 
-void displayData(word message) 
+void displayData(word message)
 {
   // put your main code here, to run repeatedly:
-  for (int i = 0; i <= 15; i++) 
+  for (int i = 0; i <= 15; i++)
   {
     digitalWrite(serialInputPin, bitRead(message, i));
     digitalWrite(shiftClockPin, HIGH);
@@ -70,3 +134,92 @@ void displayData(word message)
   digitalWrite(latchClockPin, HIGH);
   digitalWrite(latchClockPin, LOW);
 }
+
+
+
+void Translate() {
+
+  switch (Kol) {
+    case (0): KS = K1; break;
+    case (1): KS = K2; break;
+    case (2): KS = K3; break;
+    case (3): KS = K4; break;
+    case (4): KS = K5; break;
+    case (5): KS = K6; break;
+    case (6): KS = K7; break;
+    case (7): KS = K8; break;
+  }
+  if (IMAGE[0][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(1, 0, bericht1);
+  }
+  if (IMAGE[1][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(2, 0, bericht1);
+  }
+  if (IMAGE[2][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(6, 0, bericht1);
+  }
+  if (IMAGE[3][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(12, 0, bericht1);
+  }
+  if (IMAGE[4][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(7, 0, bericht1);
+  }
+  if (IMAGE[5][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(14, 0, bericht1);
+  }
+  if (IMAGE[6][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(15, 0, bericht1);
+  }
+  if (IMAGE[7][Kol] == 1) {
+    bericht1 = setBits(KS, 1, bericht1);
+    bericht1 = setBits(4, 0, bericht1);
+  }
+  Kol++;
+  if (Kol > 8) {
+    Kol = 0;
+  }
+
+}
+
+
+
+
+
+short int setBits(int welkeBit, int waardeBit, word X) {
+  if (waardeBit == 1) {
+    return (X | (1 << (16 - welkeBit)));
+  }
+  else {
+    return (X ^ (1 << (16 - welkeBit)));
+  }
+}
+
+void Acpy(byte src[8][8]) {
+  for (byte i = 0; i < 8; i++)
+  {
+    for (byte j = 0; j < 8; j++)
+    {
+      IMAGE[i][j] = src[i][j];
+    }
+  }
+}
+
+void rotary(){
+    n = digitalRead(encoder0PinA);
+  if ((encoder0PinALast == LOW) && (n == HIGH)) {
+    if (digitalRead(encoder0PinB) == LOW) {
+      interval = interval - 25;
+    } else {
+      interval = interval + 25;
+    }
+
+  }
+  encoder0PinALast = n; 
+  }
